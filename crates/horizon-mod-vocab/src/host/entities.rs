@@ -124,9 +124,10 @@ pub trait EntitiesBackend {
     /// (`Entity.isCustomNameVisible`); false for the kinds that keep no name.
     #[access(WorldOnly)]
     fn entity_custom_name_visible(&self, entity: EntityRef) -> Option<bool>;
-    /// Side: server.
+    /// Side: both.
     /// The category of the entity's type (`EntityType.getCategory`): a mob's
     /// from its type, `Monster` for the dragon, `Misc` for every other kind.
+    /// On a client, reads the category of the server-tracked entity's synced type.
     #[access(WorldOnly)]
     fn entity_classification(&self, entity: EntityRef) -> Option<MobCategory>;
     /// Side: server.

@@ -180,7 +180,7 @@ impl Game<'_> {
     /// The category of the entity's type (`EntityType.getCategory`): a mob's
     /// from its type, `Monster` for the dragon, `Misc` for every other kind.
     pub(super) fn entity_classification(&self, entity: EntityRef) -> Option<MobCategory> {
-        Some(match self.native_entity_target(entity)? {
+        Some(match self.native_entity_read_target(entity)? {
             Target::Mob(id) => match self.mobs.iter().find(|m| m.id == id)?.category() {
                 "monster" => MobCategory::Monster,
                 "creature" => MobCategory::Creature,
