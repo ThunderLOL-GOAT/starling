@@ -345,6 +345,7 @@ pub(super) mod tests {
             game.player = Some(PlayerMotion::new(game.motion, Vec3::ZERO).unwrap());
             game.player.as_mut().unwrap().health.food.exhaustion = 3.75;
             assert_eq!(game.local_food_exhaustion(), Some(3.75));
+            assert_eq!(game.local_held_regeneration(), None);
 
             let rules = game.world.health_rules;
             assert_eq!(
