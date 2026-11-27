@@ -135,6 +135,12 @@ impl Game<'_> {
         self.native_local_status(player)?;
         Some(self.ambience.moodiness)
     }
+
+    /// The local player's live exhaustion accumulator, not a value reconstructed from HUD inputs.
+    pub(super) fn local_food_exhaustion(&self) -> Option<f32> {
+        self.native_session()?;
+        Some(self.player.as_ref()?.health.food.exhaustion)
+    }
 }
 
 #[cfg(test)]
@@ -293,6 +299,25 @@ pub(super) mod tests {
             assert_eq!(game.client_session().client_latency(), None);
             game.using = Some((game.selected, 7));
             assert_eq!(game.local_item_use(), None, "no world");
+        });
+    }
+
+    #[test]
+    #[ignore = "needs prepared resources in HORIZON_TEST_RESOURCES"]
+    fn local_food_exhaustion_reads_the_live_client_accumulator() {
+        use horizon_client::motion::PlayerMotion;
+        use horizon_core::geometry::Vec3;
+
+        with_client_game(|game| {
+            assert_eq!(game.local_food_exhaustion(), None);
+            let _server = logged_client(game);
+            game.player = Some(PlayerMotion::new(game.motion, Vec3::ZERO).unwrap());
+            game.player.as_mut().unwrap().health.food.exhaustion = 3.75;
+            assert_eq!(game.local_food_exhaustion(), Some(3.75));
+
+            // Read the field again rather than caching or reconstructing a HUD estimate.
+            game.player.as_mut().unwrap().health.food.exhaustion = 1.25;
+            assert_eq!(game.local_food_exhaustion(), Some(1.25));
         });
     }
 
