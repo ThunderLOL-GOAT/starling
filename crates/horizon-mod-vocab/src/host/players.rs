@@ -94,6 +94,11 @@ pub trait PlayersClientHost {
     /// came yet.
     #[access(WorldOnly)]
     fn last_passage_refusal(&self) -> Option<(PassageId, PassageCrossRefusal)>;
+    /// Side: client.
+    /// The local player's live FoodData exhaustion accumulator, used by the hunger tick.
+    /// None before a client world is ready.
+    #[access(ClientSetup)]
+    fn local_food_exhaustion(&self) -> Option<f32>;
 }
 /// The handles' reads of the `players` area, implemented by the game and reached through [`Backend`].
 // hidden: a handle's backend, reached through `Backend`; mods call the handle, never this trait
