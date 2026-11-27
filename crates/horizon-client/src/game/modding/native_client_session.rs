@@ -199,6 +199,25 @@ pub(super) mod tests {
 
     #[test]
     #[ignore = "needs prepared resources in HORIZON_TEST_RESOURCES"]
+    fn local_food_exhaustion_reads_the_live_client_accumulator() {
+        use horizon_client::motion::PlayerMotion;
+        use horizon_core::geometry::Vec3;
+
+        with_client_game(|game| {
+            assert_eq!(game.local_food_exhaustion(), None);
+            let _server = logged_client(game);
+            game.player = Some(PlayerMotion::new(game.motion, Vec3::ZERO).unwrap());
+            game.player.as_mut().unwrap().health.food.exhaustion = 3.75;
+            assert_eq!(game.local_food_exhaustion(), Some(3.75));
+
+            // The accessor reads the field each time, not a cached HUD estimate.
+            game.player.as_mut().unwrap().health.food.exhaustion = 1.25;
+            assert_eq!(game.local_food_exhaustion(), Some(1.25));
+        });
+    }
+
+    #[test]
+    #[ignore = "needs prepared resources in HORIZON_TEST_RESOURCES"]
     fn client_session_reads_follow_connection_language_and_frame_state() {
         with_client_game(|game| {
             assert_eq!(game.client_session().client_server(), None);
