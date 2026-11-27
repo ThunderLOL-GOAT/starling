@@ -110,9 +110,8 @@ impl Game<'_> {
         })
     }
 
-    /// `PlayerTabOverlay`'s list, shown or not: the listed players in `getPlayerInfos` order (at
-    /// most 80), each with the name `getNameForDisplay` draws, and the header and footer.
-    /// None outside a logged-in client world.
+    /// The server-synced game mode for a remote player entity. None when the entity is not
+    /// tracked as a player or its player-info entry is unavailable.
     pub(super) fn native_client_entity_game_mode(
         &self,
         entity_id: u32,
@@ -123,6 +122,9 @@ impl Game<'_> {
         Some(mod_api::GameMode::from_id(id).unwrap_or(mod_api::GameMode::Survival))
     }
 
+    /// `PlayerTabOverlay`'s list, shown or not: the listed players in `getPlayerInfos` order (at
+    /// most 80), each with the name `getNameForDisplay` draws, and the header and footer.
+    /// None outside a logged-in client world.
     pub(super) fn native_client_tab_list(&self) -> Option<ClientTabList> {
         use super::api_values::TryIntoApi;
         use horizon_client::tab_list;
