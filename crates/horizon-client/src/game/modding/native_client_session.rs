@@ -113,6 +113,14 @@ impl Game<'_> {
     /// `PlayerTabOverlay`'s list, shown or not: the listed players in `getPlayerInfos` order (at
     /// most 80), each with the name `getNameForDisplay` draws, and the header and footer.
     /// None outside a logged-in client world.
+    pub(super) fn native_client_player_game_mode(
+        &self,
+        uuid: u128,
+    ) -> Option<mod_api::GameMode> {
+        let id = self.native_session()?.player_game_mode(uuid)?;
+        Some(mod_api::GameMode::from_id(id).unwrap_or(mod_api::GameMode::Survival))
+    }
+
     pub(super) fn native_client_tab_list(&self) -> Option<ClientTabList> {
         use super::api_values::TryIntoApi;
         use horizon_client::tab_list;

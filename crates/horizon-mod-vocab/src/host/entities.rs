@@ -511,10 +511,10 @@ pub trait EntitiesBackend {
     /// experience orbs and minecarts. Wraps as vanilla's `int` does.
     #[access(WorldOnly)]
     fn entity_tick_count(&self, entity: EntityRef) -> Option<i32>;
-    /// Side: server.
+    /// Side: both.
     /// Whether the entity's model is hidden (`Entity.isInvisible`): the
-    /// invisibility effect on a player or a mob, a mob's or an armor stand's
-    /// flag.
+    /// invisibility effect on the local player or a mob, or the shared invisible
+    /// flag retained for an entity this client tracks.
     #[access(WorldOnly)]
     fn entity_is_invisible(&self, entity: EntityRef) -> Option<bool>;
     /// Side: server.

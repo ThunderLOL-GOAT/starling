@@ -386,8 +386,11 @@ impl Game<'_> {
     /// invisibility effect on a player or a mob, a mob's or an armor stand's
     /// flag.
     pub(super) fn entity_is_invisible(&self, entity: EntityRef) -> Option<bool> {
-        match self.native_entity_target(entity)? {
-            Target::Player => Some(self.potions.effects.get("invisibility").is_some()),
+        match self.native_entity_read_target(entity)? {
+            Target::Player => Some(
+                self.potions.effects.get("invisibility").is_some()
+                    || self.remote.as_ref().is_some_and(|remote| remote.own_invisible),
+            ),
             Target::Guest(conn) => Some(
                 self.command_guest(conn)?
                     .effects
