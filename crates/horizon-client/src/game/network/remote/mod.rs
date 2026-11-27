@@ -11712,9 +11712,16 @@ impl Remote {
     }
     /// The game mode received for a player entity, including entries omitted from the
     /// overlay's 80-player display slice.
+    fn game_mode_for_entity(
+        level_players: &HashMap<i32, u128>,
+        tab_players: &HashMap<u128, horizon_client::tab_list::TabPlayer>,
+        entity_id: u32,
+    ) -> Option<i32> {
+        let uuid = *level_players.get(&i32::try_from(entity_id).ok()?)?;
+        tab_players.get(&uuid).map(|player| player.game_mode)
+    }
     pub(super) fn player_game_mode_for_entity(&self, entity_id: u32) -> Option<i32> {
-        let uuid = *self.level_players.get(&i32::try_from(entity_id).ok()?)?;
-        self.tab_players.get(&uuid).map(|player| player.game_mode)
+        Self::game_mode_for_entity(&self.level_players, &self.tab_players, entity_id)
     }
     /// The local player's profile UUID.
     pub(super) fn profile(&self) -> u128 {
@@ -11888,7 +11895,40 @@ mod attachment_query_tests;
 mod passage_cross_tests;
 #[cfg(test)]
 pub(crate) mod tests {
-    use super::super::api_values::TryIntoApi;
+    use super::{Remote, super::api_values::TryIntoApi};
+    use std::collections::{HashMap, HashSet};
+
+    #[test]
+    fn player_game_mode_lookup_includes_players_beyond_the_tab_overlay_limit() {
+        let mut level_players = HashMap::new();
+        let mut tab_players = HashMap::new();
+        let mut listed = HashSet::new();
+        for entity_id in 1..=81_u32 {
+            let uuid = u128::from(entity_id);
+            let mut player = horizon_client::tab_list::TabPlayer::new(
+                uuid,
+                format!("player-{entity_id}"),
+            );
+            if entity_id == 81 {
+                player.game_mode = horizon_client::tab_list::SPECTATOR;
+            } else {
+                listed.insert(uuid);
+            }
+            level_players.insert(entity_id as i32, uuid);
+            tab_players.insert(uuid, player);
+        }
+
+        assert_eq!(listed.len(), 80);
+        assert!(!listed.contains(&81));
+        assert_eq!(
+            Remote::game_mode_for_entity(&level_players, &tab_players, 81),
+            Some(horizon_client::tab_list::SPECTATOR),
+        );
+        assert_eq!(
+            Remote::game_mode_for_entity(&level_players, &tab_players, 82),
+            None,
+        );
+    }
 
     mod predicted_block_notice_tests {
         include!("predicted_block_notice_tests.rs");
