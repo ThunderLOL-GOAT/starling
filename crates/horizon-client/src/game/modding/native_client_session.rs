@@ -329,6 +329,16 @@ pub(super) mod tests {
             game.player.as_mut().unwrap().health.food.exhaustion = 3.75;
             assert_eq!(game.local_food_exhaustion(), Some(3.75));
 
+            let rules = game.world.health_rules;
+            assert_eq!(
+                game.local_food_regeneration_state(),
+                Some((
+                    rules.natural_regeneration,
+                    rules.difficulty == horizon_world::food::Difficulty::Peaceful,
+                    false,
+                )),
+            );
+
             // Read the field again rather than caching or reconstructing a HUD estimate.
             game.player.as_mut().unwrap().health.food.exhaustion = 1.25;
             assert_eq!(game.local_food_exhaustion(), Some(1.25));
