@@ -389,7 +389,10 @@ impl Game<'_> {
         match self.native_entity_read_target(entity)? {
             Target::Player => Some(
                 self.potions.effects.get("invisibility").is_some()
-                    || self.remote.as_ref().is_some_and(|remote| remote.own_invisible),
+                    || self
+                        .remote
+                        .as_ref()
+                        .is_some_and(|remote| remote.own_invisible),
             ),
             Target::Guest(conn) => Some(
                 self.command_guest(conn)?
