@@ -179,6 +179,13 @@ impl Game<'_> {
         Some(self.player.as_ref()?.health.food.exhaustion)
     }
 
+    /// The local FoodData exhaustion accumulator and AppleSkin visibility state.
+    pub(super) fn local_food_exhaustion_state(&self) -> Option<(f32, bool)> {
+        self.native_session()?;
+        let player = self.player.as_ref()?;
+        Some((player.health.food.exhaustion, !player.client_side))
+    }
+
     /// The local world's natural-regeneration conditions used by food previews.
     pub(super) fn local_food_regeneration_state(&self) -> Option<(bool, bool, bool)> {
         self.native_session()?;
@@ -191,6 +198,23 @@ impl Game<'_> {
             rules.difficulty == horizon_world::food::Difficulty::Peaceful,
             regeneration_blocked,
         ))
+    }
+
+    /// Remaining duration and amplifier of the held consumable's regeneration effect.
+    pub(super) fn local_held_regeneration(&self) -> Option<(i32, i32)> {
+        self.native_session()?;
+        let held_item = self.held().and_then(|stack| self.res.items().get(&*stack.item));
+        held_item
+            .and_then(|info| info.consumable.as_ref())
+            .and_then(|consumable| {
+                consumable.effects.iter().find_map(|effect| match effect {
+                    horizon_client::items::ConsumeEffect::ApplyEffects { effects, .. } => effects
+                        .iter()
+                        .find(|e| horizon_client::brewing::effect(&e.id).is_some_and(|d| d.id == "regeneration"))
+                        .map(|e| (e.duration, e.amplifier)),
+                    _ => None,
+                })
+            })
     }
 }
 
