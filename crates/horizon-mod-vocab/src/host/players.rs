@@ -99,6 +99,10 @@ pub trait PlayersClientHost {
     /// None before a client world is ready.
     #[access(ClientSetup)]
     fn local_food_exhaustion(&self) -> Option<f32>;
+    /// The local FoodData exhaustion accumulator and whether AppleSkin should show it.
+    /// The visibility flag is false for client-side-only players.
+    #[access(ClientSetup)]
+    fn local_food_exhaustion_state(&self) -> Option<(f32, bool)>;
     /// The local world's natural-regeneration rules for AppleSkin-style previews.
     /// Returns (natural regeneration enabled, peaceful difficulty, regeneration blocked by an active effect).
     /// None before a client world is ready.
