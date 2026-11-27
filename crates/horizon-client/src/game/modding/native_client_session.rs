@@ -171,6 +171,13 @@ impl Game<'_> {
         self.native_local_status(player)?;
         Some(self.ambience.moodiness)
     }
+
+    /// The local player's live exhaustion accumulator, not a value reconstructed from HUD inputs.
+    /// The native health HUD calls this during client setup after the local player is available.
+    pub(super) fn local_food_exhaustion(&self) -> Option<f32> {
+        self.native_session()?;
+        Some(self.player.as_ref()?.health.food.exhaustion)
+    }
 }
 
 #[cfg(test)]
