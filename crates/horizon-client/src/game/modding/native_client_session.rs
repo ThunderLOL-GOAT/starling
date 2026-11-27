@@ -141,6 +141,20 @@ impl Game<'_> {
         self.native_session()?;
         Some(self.player.as_ref()?.health.food.exhaustion)
     }
+
+    /// The local world's natural-regeneration conditions used by AppleSkin-style food previews.
+    pub(super) fn local_food_regeneration_state(&self) -> Option<(bool, bool, bool)> {
+        self.native_session()?;
+        let rules = self.world.health_rules;
+        let regeneration_blocked = ["poison", "wither", "regeneration"]
+            .iter()
+            .any(|id| self.potions.effects.get(id).is_some());
+        Some((
+            rules.natural_regeneration,
+            rules.difficulty == horizon_world::food::Difficulty::Peaceful,
+            regeneration_blocked,
+        ))
+    }
 }
 
 #[cfg(test)]
