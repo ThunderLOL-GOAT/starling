@@ -104,6 +104,10 @@ pub trait PlayersClientHost {
     /// None before a client world is ready.
     #[access(ClientSetup)]
     fn local_food_regeneration_state(&self) -> Option<(bool, bool, bool)>;
+    /// Remaining duration and amplifier of the held consumable's regeneration effect, if any.
+    /// None when no local consumable is held or it grants no regeneration effect.
+    #[access(ClientSetup)]
+    fn local_held_regeneration(&self) -> Option<(i32, i32)>;
 }
 /// The handles' reads of the `players` area, implemented by the game and reached through [`Backend`].
 // hidden: a handle's backend, reached through `Backend`; mods call the handle, never this trait
