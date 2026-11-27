@@ -99,6 +99,11 @@ pub trait PlayersClientHost {
     /// used by the hunger tick. None before a client world is ready.
     #[access(ClientSetup)]
     fn local_food_exhaustion(&self) -> Option<f32>;
+    /// The local world's natural-regeneration rules for AppleSkin-style previews.
+    /// Returns (natural regeneration enabled, peaceful difficulty, regeneration blocked by an active effect).
+    /// None before a client world is ready.
+    #[access(ClientSetup)]
+    fn local_food_regeneration_state(&self) -> Option<(bool, bool, bool)>;
 }
 /// The handles' reads of the `players` area, implemented by the game and reached through [`Backend`].
 // hidden: a handle's backend, reached through `Backend`; mods call the handle, never this trait
