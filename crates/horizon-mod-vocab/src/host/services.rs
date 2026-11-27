@@ -106,14 +106,14 @@ pub trait ClientSession {
             crate::world::phase::LoadAccess::ClientSetup,
         )
     }
-    /// The last game mode the server sent for `uuid`, whether or not the profile is
-    /// currently listed in the Tab overlay. This reads the full player-info map,
-    /// not the overlay's 80-entry display slice. None when this client has no entry
-    /// for that profile or is outside a logged-in client world. Sends nothing.
-    fn client_player_game_mode(&self, uuid: u128) -> Option<GameMode> {
+    /// The game mode the server last sent for a player entity in this client world.
+    /// Looks up the entity's profile UUID in the full player-info map, including
+    /// entries beyond the Tab overlay's 80-player display slice. None when the entity
+    /// is not a known player or has no retained player-info entry. Sends nothing.
+    fn client_entity_game_mode(&self, entity_id: u32) -> Option<GameMode> {
         crate::world::phase::unprovided(
-            "ClientSession::client_player_game_mode",
-            "client_player_game_mode",
+            "ClientSession::client_entity_game_mode",
+            "client_entity_game_mode",
             crate::world::phase::LoadAccess::ClientSetup,
         )
     }

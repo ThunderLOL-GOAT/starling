@@ -11710,9 +11710,10 @@ impl Remote {
             .iter()
             .filter_map(|uuid| self.tab_players.get(uuid))
     }
-    /// The last game mode received for a profile, including entries omitted from the
+    /// The game mode received for a player entity, including entries omitted from the
     /// overlay's 80-player display slice.
-    pub(super) fn player_game_mode(&self, uuid: u128) -> Option<i32> {
+    pub(super) fn player_game_mode_for_entity(&self, entity_id: u32) -> Option<i32> {
+        let uuid = *self.level_players.get(&i32::try_from(entity_id).ok()?)?;
         self.tab_players.get(&uuid).map(|player| player.game_mode)
     }
     /// The local player's profile UUID.
