@@ -117,7 +117,9 @@ impl Game<'_> {
         &self,
         entity_id: u32,
     ) -> Option<mod_api::GameMode> {
-        let id = self.native_session()?.player_game_mode_for_entity(entity_id)?;
+        let id = self
+            .native_session()?
+            .player_game_mode_for_entity(entity_id)?;
         Some(mod_api::GameMode::from_id(id).unwrap_or(mod_api::GameMode::Survival))
     }
 
