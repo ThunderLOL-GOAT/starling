@@ -142,6 +142,13 @@ impl Game<'_> {
         Some(self.player.as_ref()?.health.food.exhaustion)
     }
 
+    /// The local FoodData exhaustion accumulator and AppleSkin visibility state.
+    pub(super) fn local_food_exhaustion_state(&self) -> Option<(f32, bool)> {
+        self.native_session()?;
+        let player = self.player.as_ref()?;
+        Some((player.health.food.exhaustion, !player.client_side))
+    }
+
     /// The local world's natural-regeneration conditions used by AppleSkin-style food previews.
     pub(super) fn local_food_regeneration_state(&self) -> Option<(bool, bool, bool)> {
         self.native_session()?;
