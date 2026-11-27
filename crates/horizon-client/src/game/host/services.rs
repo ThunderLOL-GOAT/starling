@@ -38,6 +38,13 @@ impl ClientSession for Game<'_> {
         );
         self.native_client_tab_list()
     }
+    fn client_entity_game_mode(&self, entity_id: u32) -> Option<GameMode> {
+        mod_api::__private::check_access(
+            "client_entity_game_mode",
+            mod_api::__private::LoadAccess::ClientSetup,
+        );
+        self.native_client_entity_game_mode(entity_id)
+    }
 }
 impl Commands for Game<'_> {
     fn refresh_commands(&mut self) {
