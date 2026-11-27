@@ -247,6 +247,8 @@ pub(super) mod tests {
             game.player = Some(PlayerMotion::new(game.motion, Vec3::ZERO).unwrap());
             game.player.as_mut().unwrap().health.food.exhaustion = 3.75;
             assert_eq!(game.local_food_exhaustion(), Some(3.75));
+            assert_eq!(game.local_food_exhaustion_state().map(|(value, _)| value), Some(3.75));
+            assert_eq!(game.local_held_regeneration(), None);
 
             // The accessor reads the field each time, not a cached HUD estimate.
             game.player.as_mut().unwrap().health.food.exhaustion = 1.25;
