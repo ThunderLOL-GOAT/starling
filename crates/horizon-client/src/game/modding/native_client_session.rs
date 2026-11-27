@@ -248,6 +248,18 @@ pub(super) mod tests {
             game.player.as_mut().unwrap().health.food.exhaustion = 3.75;
             assert_eq!(game.local_food_exhaustion(), Some(3.75));
             assert_eq!(game.local_food_exhaustion_state().map(|(value, _)| value), Some(3.75));
+            let player = game.player.as_ref().unwrap();
+            assert_eq!(game.local_food_exhaustion_state(), Some((3.75, !player.client_side)));
+            let rules = game.world.health_rules;
+            assert_eq!(
+                game.local_food_regeneration_state(),
+                Some((
+                    rules.natural_regeneration,
+                    rules.difficulty == horizon_world::food::Difficulty::Peaceful,
+                    ["poison", "wither", "regeneration"].iter()
+                        .any(|id| game.potions.effects.get(id).is_some()),
+                )),
+            );
             assert_eq!(game.local_held_regeneration(), None);
 
             // The accessor reads the field each time, not a cached HUD estimate.
