@@ -11895,7 +11895,7 @@ mod attachment_query_tests;
 mod passage_cross_tests;
 #[cfg(test)]
 pub(crate) mod tests {
-    use super::{Remote, super::api_values::TryIntoApi};
+    use super::{super::api_values::TryIntoApi, Remote};
     use std::collections::{HashMap, HashSet};
 
     #[test]
@@ -11905,10 +11905,8 @@ pub(crate) mod tests {
         let mut listed = HashSet::new();
         for entity_id in 1..=81_u32 {
             let uuid = u128::from(entity_id);
-            let mut player = horizon_client::tab_list::TabPlayer::new(
-                uuid,
-                format!("player-{entity_id}"),
-            );
+            let mut player =
+                horizon_client::tab_list::TabPlayer::new(uuid, format!("player-{entity_id}"));
             if entity_id == 81 {
                 player.game_mode = horizon_client::tab_list::SPECTATOR;
             } else {
